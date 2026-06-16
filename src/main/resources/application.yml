@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: thread-scheduler
+
+thread-scheduler:
+  enabled: true
+  total-threads: 100
+  task-executor-idle-time: 300  # 空闲超时时间(秒)
+  schedule-rate: 300            # 调度频率(秒)
+  adjust-threads-off: false     # 是否关闭动态线程调整
+  executors:
+    # CPU密集型任务执行器
+    - name: "cpu-executor"
+      core-size: 4
+      queue-size: 100
+      reject-strategy: "AbortPolicy"
+    
+    # IO密集型任务执行器
+    - name: "io-executor"
+      core-size: 20
+      queue-size: 1000
+      reject-strategy: "CallerRunsPolicy"
+    
+    # 快速任务执行器
+    - name: "quick-executor"
+      core-size: 8
+      queue-size: 2000
+      reject-strategy: "DiscardOldestPolicy"
+    
+    # 性能测试执行器
+    - name: "performance-executor"
+      core-size: 10
+      queue-size: 500
+      reject-strategy: "CallerRunsPolicy"
+
+logging:
+  level:
+    io.github.nxr666.threadscheduler: INFO
+    root: INFO 

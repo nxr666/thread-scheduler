@@ -1,0 +1,51 @@
+spring:
+  application:
+    name: thread-scheduler-test
+
+thread-scheduler:
+  enabled: true
+  total-threads: 100
+  task-executor-idle-time: 60  # 30秒空闲超时
+  schedule-rate: 60             # 5秒调度一次
+  adjust-threads-off: false    # 关闭动态线程调整
+  executors:
+    # 性能测试执行器
+    - name: "performance-executor"
+      core-size: 10
+      queue-size: 1000000
+      reject-strategy: "CallerRunsPolicy"
+    
+    # CPU密集型任务执行器
+    - name: "cpu-executor"
+      core-size: 4  # CPU核心数相关
+      queue-size: 1000000
+#      reject-strategy: "AbortPolicy"
+    
+    # IO密集型任务执行器
+    - name: "io-executor"
+      core-size: 20  # IO任务可以更多线程
+      queue-size: 1000000
+#      reject-strategy: "CallerRunsPolicy"
+    
+    # 快速任务执行器
+    - name: "quick-executor"
+      core-size: 8
+      queue-size: 1000000
+      reject-strategy: "DiscardOldestPolicy"
+    
+    # 动态调整测试执行器
+    - name: "dynamic-executor"
+      core-size: 2   # 初始较小，测试动态扩容
+      queue-size: 500
+      reject-strategy: "CallerRunsPolicy"
+    
+    # 资源监控测试执行器
+    - name: "resource-executor"
+      core-size: 6
+      queue-size: 300
+      reject-strategy: "DiscardPolicy"
+
+logging:
+  level:
+    io.github.nxr666.threadscheduler: DEBUG
+    root: INFO
